@@ -1,0 +1,63 @@
+.na primeira resposta a ia so me deu um codigo sem contexto e sem instruções para aplicação no corpo do codigo.
+. na segunda resposta, pedindo para atuar como um desenvolvedor senior na area tive um codigo mais explicito e
+com comentarios explicativos como implantar e o funcionamento do codigo
+
+exemplo da segunda resposta:
+import re
+
+def is_valid_email(email: str) -> bool:
+    """
+    Valida a sintaxe de um endereço de e-mail.
+    
+    Args:
+        email (str): A string contendo o e-mail a ser validado.
+        
+    Returns:
+        bool: True se o e-mail for válido, False caso contrário.
+    """
+    
+    # 1. Early Return: Se não for string ou estiver vazia, nem processamos
+    if not isinstance(email, str) or not email.strip():
+        return False
+
+    # 2. Definição do Padrão Regex (Padrão sugerido pela maioria dos frameworks)
+    # Explicação:
+    # ^[a-z0-9._%+-]+   -> Início: letras, números e caracteres permitidos
+    # @                 -> Separador obrigatório
+    # [a-z0-9.-]+       -> Domínio: letras, números, pontos ou hifens
+    # \.[a-z]{2,}$      -> TLD: ponto seguido de no mínimo 2 letras (com, org, br, etc)
+    regex_pattern = r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'
+
+    # 3. Execução da busca (ignora maiúsculas/minúsculas por padrão no re.IGNORECASE)
+    if re.fullmatch(regex_pattern, email, re.IGNORECASE):
+        return True
+        
+    return False
+
+# --- Área de Testes (Unit Testing simples) ---
+if __name__ == "__main__":
+    emails_para_testar = [
+        "dev.senior@empresa.com.br", # Válido
+        "usuario123@gmail.com",      # Válido
+        "email_invalido@dominio",    # Inválido (sem TLD)
+        "@sem-usuario.com",          # Inválido (sem prefixo)
+        "espaço no@email.com",       # Inválido (caractere proibido)
+        None,                        # Inválido (tipo incorreto)
+    ]
+
+    print(f"{'E-mail':<30} | {'Status'}")
+    print("-" * 45)
+    
+    for email in emails_para_testar:
+        status = "✅ VÁLIDO" if is_valid_email(email) else "❌ INVÁLIDO"
+        print(f"{str(email):<30} | {status}")
+
+Segurança (ReDoS): Note que utilizei re.fullmatch em vez de re.search. Isso garante que a string inteira seja validada do início ao fim, evitando que um e-mail malicioso contenha scripts ocultos após o sufixo válido.
+
+Type Hinting: Adicionei tipagem (email: str -> bool) para facilitar o uso de ferramentas de análise estática como o MyPy e melhorar o IntelliSense no VS Code/PyCharm.
+
+Por que não validar 100% via Regex? A especificação técnica de e-mails (RFC 5322) é incrivelmente complexa. Tentar cobrir todos os casos via Regex torna o código ilegível. Para validações críticas (como sistemas de pagamento), a melhor prática é:
+
+Validar o formato básico (como fiz acima).
+
+Enviar um e-mail de confirmação com token de verificação.
