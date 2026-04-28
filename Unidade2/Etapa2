@@ -1,0 +1,43 @@
+import requests
+
+def consultar_cep(cep):
+    # ESTRATÉGIA DE IA: Simulação de erro intencional na URL para testar o try/except
+    # Exemplo: trocar 'viacep.com.br' por 'viacep.com.br.errado' para ver o erro de conexão
+    url = f"https://viacep.com.br/ws/{cep}/json/"
+
+    try:
+        response = requests.get(url, timeout=5)
+        
+        # Verifica erros de status HTTP (ex: 404, 500)
+        response.raise_for_status() 
+        
+        dados = response.json()
+
+        if "erro" in dados:
+            print(f"❌ Erro: O CEP {cep} não foi encontrado na base de dados.")
+        else:
+            # REQUISITO DE SUCESSO: JSON formatado e impresso com clareza
+            print("-" * 30)
+            print(f"📬 RESULTADO PARA O CEP: {cep}")
+            print("-" * 30)
+            print(f"Logradouro: {dados.get('logradouro', 'N/A')}")
+            print(f"Bairro:     {dados.get('bairro', 'N/A')}")
+            print(f"Cidade/UF:  {dados.get('localidade', 'N/A')} - {dados.get('uf', 'N/A')}")
+            print(f"DDD:        {dados.get('ddd', 'N/A')}")
+            print("-" * 30)
+
+    except requests.exceptions.HTTPError as http_err:
+        print(f"⚠️ Erro HTTP: {http_err}")
+    except requests.exceptions.ConnectionError:
+        print("⚠️ Erro de Conexão: Não foi possível alcançar o servidor. Verifique a URL!")
+    except Exception as err:
+        print(f"⚠️ Um erro inesperado ocorreu: {err}")
+
+if __name__ == "__main__":
+    print("--- Sistema de Consulta ViaCEP ---")
+    entrada = input("Digite o CEP (apenas números): ").strip()
+    
+    if len(entrada) == 8 and entrada.isdigit():
+        consultar_cep(entrada)
+    else:
+        print("❌ Formato de CEP inválido! Digite exatamente 8 números.")
