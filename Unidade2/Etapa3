@@ -1,0 +1,42 @@
+import time
+import random
+
+# Função 1: Simula a leitura de um sensor
+def ler_temperatura():
+    # Simula temperaturas entre 20 e 40 graus
+    return random.uniform(20, 40)
+
+# Função 2: Lógica de verificação (Condição Crítica)
+def verificar_status(temp, limite=30):
+    if temp > limite:
+        return True, "CRÍTICO"
+    return False, "NORMAL"
+
+# Função 3: Sistema de Notificação (Simulação de Alerta)
+def disparar_alerta(temp):
+    print("\n" + "!" * 30)
+    print(f"🚨 ALERTA DE SISTEMA 🚨")
+    print(f"CONDIÇÃO CRÍTICA ATINGIDA!")
+    print(f"Temperatura: {temp:.2f}°C")
+    print("Ação: Enviando e-mail simulado para o suporte...")
+    print("!" * 30 + "\n")
+
+# Função Principal (Orquestração)
+def monitorar_sistema():
+    print("Iniciando monitoramento (Pressione Ctrl+C para parar)...")
+    try:
+        while True:
+            temp_atual = ler_temperatura()
+            eh_critico, status = verificar_status(temp_atual)
+            
+            print(f"Status: {status} | Temp: {temp_atual:.2f}°C")
+            
+            if eh_critico:
+                disparar_alerta(temp_atual)
+            
+            time.sleep(2)  # Espera 2 segundos para a próxima leitura
+    except KeyboardInterrupt:
+        print("\nMonitoramento encerrado pelo usuário.")
+
+if __name__ == "__main__":
+    monitorar_sistema()
