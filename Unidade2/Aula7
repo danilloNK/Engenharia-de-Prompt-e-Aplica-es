@@ -1,0 +1,63 @@
+import random
+import os
+
+# --- FUNÇÕES AUXILIARES (Modularização) ---
+
+def selecionar_palavra():
+    palavras = ["python", "automacao", "inteligencia", "algoritmo", "prompt"]
+    return random.choice(palavras).lower()
+
+def exibir_status(palavra_oculta, tentativas, letras_tentadas):
+    print("\n" + "="*30)
+    print(f"PALAVRA: {' '.join(palavra_oculta)}")
+    print(f"VIDAS: {'❤️ ' * tentativas}")
+    print(f"USADAS: {', '.join(letras_tentadas)}")
+    print("="*30)
+
+def validar_entrada():
+    """Intervenção Humana: Garante que o usuário digite apenas uma letra válida."""
+    while True:
+        entrada = input("👉 Digite uma letra: ").lower().strip()
+        if len(entrada) == 1 and entrada.isalpha():
+            return entrada
+        print("⚠️ Entrada inválida! Digite apenas uma letra.")
+
+# --- LÓGICA PRINCIPAL (Orquestração) ---
+
+def jogar():
+    palavra_secreta = selecionar_palavra()
+    letras_descobertas = ["_"] * len(palavra_secreta)
+    tentativas = 6
+    letras_usadas = []
+
+    print("🚀 INICIANDO SISTEMA DE ENTRETENIMENTO v1.0")
+
+    while tentativas > 0 and "_" in letras_descobertas:
+        exibir_status(letras_descobertas, tentativas, letras_usadas)
+        
+        tentativa = validar_entrada()
+
+        if tentativa in letras_usadas:
+            print(f"🟡 Você já tentou a letra '{tentativa}'.")
+            continue
+
+        letras_usadas.append(tentativa)
+
+        if tentativa in palavra_secreta:
+            print(f"✅ Boa! A letra '{tentativa}' existe.")
+            for i, letra in enumerate(palavra_secreta):
+                if letra == tentativa:
+                    letras_descobertas[i] = tentativa
+        else:
+            print(f"❌ Erro! A letra '{tentativa}' não existe.")
+            tentativas -= 1
+
+    # Resultado Final
+    if "_" not in letras_descobertas:
+        print(f"\n🏆 VITÓRIA! A palavra era: {palavra_secreta.upper()}")
+    else:
+        print(f"\n💀 GAME OVER! A IA venceu. A palavra era: {palavra_secreta.upper()}")
+
+if __name__ == "__main__":
+    jogar()
+
