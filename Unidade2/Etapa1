@@ -1,0 +1,28 @@
+import os
+import shutil
+
+def organizar_arquivos(diretorio):
+    if not os.path.exists(diretorio):
+        print("Pasta não encontrada!")
+        return
+
+    for arquivo in os.listdir(diretorio):
+        caminho_antigo = os.path.join(diretorio, arquivo)
+
+        if os.path.isfile(caminho_antigo):
+            # Extrai a extensão e padroniza para minúsculas
+            partes = arquivo.split(".")
+            extensao = partes[-1].lower() if len(partes) > 1 else "outros"
+
+            pasta_destino = os.path.join(diretorio, extensao)
+            os.makedirs(pasta_destino, exist_ok=True)
+
+            try:
+                shutil.move(caminho_antigo, os.path.join(pasta_destino, arquivo))
+            except Exception as e:
+                print(f"Erro ao mover {arquivo}: {e}")
+
+    print("Organização concluída!")
+
+organizar_arquivos("arquivos")
+
